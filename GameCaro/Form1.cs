@@ -1,22 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GameCaro
 {
     public partial class Form1 : Form
     {
+        #region Properties
+        ChessBoardManager chessBoard;
+        #endregion
         public Form1()
         {
             InitializeComponent();
-
-            DrawChessBorad();
+            chessBoard = new ChessBoardManager(pnlchessboard);
+            chessBoard.DrawChessBoard();
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -44,9 +41,7 @@ namespace GameCaro
 
         }
 
-        void DrawChessBorad()
-        {
-            MessageBox.Show("Đã vẽ bàn cờ rồi đó");
-        }
+        
     }
 }
+

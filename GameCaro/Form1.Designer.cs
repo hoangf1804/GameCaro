@@ -50,7 +50,7 @@
             this.pnlchessboard.BackColor = System.Drawing.SystemColors.Control;
             this.pnlchessboard.Location = new System.Drawing.Point(2, 12);
             this.pnlchessboard.Name = "pnlchessboard";
-            this.pnlchessboard.Size = new System.Drawing.Size(557, 612);
+            this.pnlchessboard.Size = new System.Drawing.Size(575, 569);
             this.pnlchessboard.TabIndex = 0;
             this.pnlchessboard.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
@@ -58,7 +58,7 @@
             // 
             this.pnlAvatar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlAvatar.Controls.Add(this.pctAvatar);
-            this.pnlAvatar.Location = new System.Drawing.Point(565, 12);
+            this.pnlAvatar.Location = new System.Drawing.Point(583, 12);
             this.pnlAvatar.Name = "pnlAvatar";
             this.pnlAvatar.Size = new System.Drawing.Size(288, 251);
             this.pnlAvatar.TabIndex = 1;
@@ -83,9 +83,9 @@
             this.panel3.Controls.Add(this.pctbMark);
             this.panel3.Controls.Add(this.prcbCoolDown);
             this.panel3.Controls.Add(this.txbPlayerName);
-            this.panel3.Location = new System.Drawing.Point(568, 276);
+            this.panel3.Location = new System.Drawing.Point(586, 276);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(284, 347);
+            this.panel3.Size = new System.Drawing.Size(284, 305);
             this.panel3.TabIndex = 2;
             // 
             // label1
@@ -145,7 +145,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(865, 636);
+            this.ClientSize = new System.Drawing.Size(883, 619);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.pnlAvatar);
             this.Controls.Add(this.pnlchessboard);
