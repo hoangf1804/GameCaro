@@ -35,6 +35,8 @@ namespace GameCaro
                     btn.Height = Cons.CHESS_HEIGHT;
                     btn.Location = new Point(Oldbutton.Location.X + Oldbutton.Width, Oldbutton.Location.Y);
 
+                    btn.Click += btn_Click;
+
                     chessBoard.Controls.Add(btn);
                     Oldbutton = btn;
                 }
@@ -44,11 +46,18 @@ namespace GameCaro
                 {
                     Width = 0,
                     Height = 0,
-                    Location = new Point(0, Oldbutton.Location.Y + Cons.CHESS_HEIGHT)
+                    Location = new Point(0, Oldbutton.Location.Y + Cons.CHESS_HEIGHT),
+                    BackgroundImageLayout = ImageLayout.Stretch
                 };
             }
         }
+       
+        void btn_Click(object sender, EventArgs e)
+        {
+            Button btn = sender as Button;
+
+            btn.BackgroundImage = Image.FromFile(Application.StartupPath + "\\Resources\\x.png");
+        }
         #endregion
-        
     }
 }
