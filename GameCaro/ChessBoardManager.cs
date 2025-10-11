@@ -11,14 +11,39 @@ namespace GameCaro
     public class ChessBoardManager
     {
         #region Properties
-        private readonly Panel chessBoard; 
+        private readonly Panel chessBoard;
+        private List<Player> player;
+        public List<Player> Player { get => player; set => player = value; }
+       
+
+        private int currentPlayer;
+        public int CurrentPlayer { get => currentPlayer; set => currentPlayer = value; }
+       
+
+        private TextBox playerName;
+        public TextBox PlayerName { get => playerName; set => playerName = value; }
+        
+
+        private PictureBox playerMark;
+        public PictureBox PlayerMark { get => playerMark; set => playerMark = value; }
         #endregion
 
         #region Initialize
-        public ChessBoardManager(Panel chessBoard) 
+        public ChessBoardManager(Panel chessBoard, TextBox playerName, PictureBox mark) 
         {
             this.chessBoard = chessBoard;
+            this.PlayerName = playerName;
+            this.PlayerMark = mark;
+            this.Player = new List<Player>() 
+            {
+                new Player("QuocKhanh",Image.FromFile(Application.StartupPath + "\\Resources\\x.png")),
+                new Player("DepTrai",Image.FromFile(Application.StartupPath + "\\Resources\\o.png"))
+            };
+            CurrentPlayer = 0;
+            ChangePlayer();
         }
+
+     
         #endregion
 
         #region Methods
@@ -56,7 +81,22 @@ namespace GameCaro
         {
             Button btn = sender as Button;
 
-            btn.BackgroundImage = Image.FromFile(Application.StartupPath + "\\Resources\\x.png");
+            if (btn.BackgroundImage != null)
+                return;
+            Mark(btn);
+
+            ChangePlayer();
+            
+        }
+        private void Mark(Button btn)
+        {
+            btn.BackgroundImage = Player[CurrentPlayer].Mark;
+            CurrentPlayer = CurrentPlayer == 1 ? 0 : 1;
+        }
+        private void ChangePlayer()
+        {
+            PlayerName.Text = Player[CurrentPlayer].Name;
+            PlayerMark.Image = Player[CurrentPlayer].Mark;
         }
         #endregion
     }

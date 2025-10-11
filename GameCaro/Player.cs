@@ -18,7 +18,7 @@ namespace GameCaro
 
         public Player(string name,Image mark)
         {
-            this.name = name;
+            this.Name = name;
             this.Mark = mark;
         }
     }
