@@ -29,7 +29,7 @@ namespace GameCaro
         {
             tmCoolDown.Stop();
             pnlchessboard.Enabled = false;
-            MessageBox.Show("Ket Thuc");
+            MessageBox.Show("Kết thúc");
         }  
 
         private void ChessBoard_PlayerMarked(object sender, EventArgs e)
