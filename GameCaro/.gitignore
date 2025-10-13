@@ -1,0 +1,71 @@
+﻿# Windows Forms Project Specific
+# User-specific files
+.vs/
+.vscode/
+.idea/
+
+# User-specific files for Visual Studio for Mac
+.vscode/
+.idea/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Logs
+*.log
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Dd]istro/
+[Dd]ebug_x86/
+[Dd]ebug_x64/
+[Dd]ebug_ARM/
+[Dd]Release/
+[Dd]ReleasePublic/
+[Dd]istro/
+[Dd]Release_x86/
+[Dd]Release_x64/
+[Dd]Release_ARM/
+obj/
+bin/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Tệp cache của Visual Studio
+.vs2019/
+.vs2017/
+.vs2015/
+
+# File của TFS
+$tf/
+
+# Backup files
+*~.tmp
+*.bak
+*.swp
+*.suo
+*.user
+*.userosscache
+*.sln.docstates

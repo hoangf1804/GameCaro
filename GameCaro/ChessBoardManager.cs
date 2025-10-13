@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -26,6 +27,8 @@ namespace GameCaro
 
         private PictureBox playerMark;
         public PictureBox PlayerMark { get => playerMark; set => playerMark = value; }
+        private List<List<Button>> matrix;
+        public List<List<Button>> Matrix { get => matrix; set => matrix = value; }
         #endregion
 
         #region Initialize
@@ -41,28 +44,160 @@ namespace GameCaro
             };
             CurrentPlayer = 0;
             ChangePlayer();
+            
         }
+        void btn_Click(object sender, EventArgs e)
+        {
+            Button btn = sender as Button;
 
-     
+            if (btn.BackgroundImage != null)
+                return;
+            Mark(btn);
+
+            ChangePlayer();
+            if (isEndGame(btn))
+            {
+                EndGame();
+            }
+        }
+        private void EndGame() {
+            MessageBox.Show("Kết thúc game !");
+        }
+        private bool isEndGame(Button btn)
+        {
+            return isEndHorizontal(btn) || isEndVertical(btn) || isEndSub(btn) || isEndPrimary(btn);
+        }
+        private Point GetChessPoint(Button btn)
+        {
+              
+            int vertical = Convert.ToInt32(btn.Tag);
+            int horizontal = Matrix[vertical].IndexOf(btn);
+            Point point = new Point(horizontal, vertical);
+            return point;
+        }
+        private bool isEndHorizontal(Button btn)
+        {
+            Point point = GetChessPoint(btn);
+            int countLeft = 0;
+            for (int i = point.X ; i >0; i--) 
+            {
+                if (Matrix[point.Y][i].BackgroundImage == btn.BackgroundImage)
+                    countLeft++;
+                else
+                    break;
+            }
+            int countRight = 0;
+            for (int i = point.X + 1; i < Cons.CHESS_BOARD_WIDTH; i++)
+            {
+                if (Matrix[point.Y][i].BackgroundImage == btn.BackgroundImage)
+                    countRight++;
+                else
+                    break;
+            }
+            return countLeft + countRight == 5;
+        }
+        private bool isEndVertical(Button btn)
+        {
+            Point point = GetChessPoint(btn);
+            int countTop = 0;
+            for (int i = point.Y; i > 0; i--)
+            {
+                if (Matrix[i][point.X].BackgroundImage == btn.BackgroundImage)
+                    countTop++;
+                else
+                    break;
+            }
+            int countBottom = 0;
+            for (int i = point.Y + 1; i < Cons.CHESS_BOARD_HEIGHT; i++)
+            {
+                if (Matrix[i][point.X].BackgroundImage == btn.BackgroundImage)
+                    countBottom++;
+                else
+                    break;
+            }
+            return countTop + countBottom == 5;
+        }
+        private bool isEndPrimary(Button btn)
+        {
+            Point point = GetChessPoint(btn);
+            int countTop = 0;
+
+            for (int i =0; i <= point.X; i++)
+            {
+                if (point.X - i < 0 || point.Y - i < 0)
+                    break;
+
+                if (Matrix[point.Y-i][point.X-i].BackgroundImage == btn.BackgroundImage)
+                    countTop++;
+                else
+                    break;
+            }
+            int countBottom = 0;
+            for (int i = 1; i <= Cons.CHESS_BOARD_WIDTH-point.X; i++)
+            {
+                if(point.Y + i >= Cons.CHESS_BOARD_HEIGHT||point.X + i >= Cons.CHESS_BOARD_WIDTH)
+                    break;
+                if (Matrix[point.Y + i][point.X + i].BackgroundImage == btn.BackgroundImage)
+                    countBottom++;
+                else
+                    break;
+            }
+            return countTop + countBottom == 5;
+        }
+        private bool isEndSub(Button btn)
+        {
+            Point point = GetChessPoint(btn);
+            int countTop = 0;
+
+            for (int i = 0; i <= point.X; i++)
+            {
+                if (point.X + i >= Cons.CHESS_BOARD_WIDTH || point.Y - i < 0)
+                    break;
+
+                if (Matrix[point.Y - i][point.X + i].BackgroundImage == btn.BackgroundImage)
+                    countTop++;
+                else
+                    break;
+            }
+            int countBottom = 0;
+            for (int i = 1; i <= Cons.CHESS_BOARD_WIDTH - point.X; i++)
+            {
+                if ( point.Y + i >= Cons.CHESS_BOARD_WIDTH ||point.X - i < 0)
+                    break; 
+                if (Matrix[point.Y + i][point.X - i].BackgroundImage == btn.BackgroundImage)
+                    countBottom++;
+                else
+                    break;
+            }
+            return countTop + countBottom == 5;
+        }   
+
+
+
         #endregion
 
         #region Methods
         public void DrawChessBoard()
         {
+            Matrix = new List<List<Button>>();
             Button Oldbutton = new Button() { Width = 0, Location = new Point(0, 0) };
 
             for (int i = 0; i < Cons.CHESS_BOARD_HEIGHT; i++)  // số hàng
             {
+                Matrix.Add(new List<Button>());
                 for (int j = 0; j < Cons.CHESS_BOARD_WIDTH; j++)  // số cột
                 {
                     Button btn = new Button();
                     btn.Width = Cons.CHESS_WIDTH;
                     btn.Height = Cons.CHESS_HEIGHT;
                     btn.Location = new Point(Oldbutton.Location.X + Oldbutton.Width, Oldbutton.Location.Y);
-
+                    btn.BackgroundImageLayout = ImageLayout.Stretch; 
+                    btn.Tag = i.ToString();
+                    
                     btn.Click += btn_Click;
 
                     chessBoard.Controls.Add(btn);
+                    Matrix[i].Add(btn);
                     Oldbutton = btn;
                 }
 
@@ -73,21 +208,11 @@ namespace GameCaro
                     Height = 0,
                     Location = new Point(0, Oldbutton.Location.Y + Cons.CHESS_HEIGHT),
                     BackgroundImageLayout = ImageLayout.Stretch
+                    
                 };
             }
         }
        
-        void btn_Click(object sender, EventArgs e)
-        {
-            Button btn = sender as Button;
-
-            if (btn.BackgroundImage != null)
-                return;
-            Mark(btn);
-
-            ChangePlayer();
-            
-        }
         private void Mark(Button btn)
         {
             btn.BackgroundImage = Player[CurrentPlayer].Mark;
