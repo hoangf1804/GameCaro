@@ -29,6 +29,19 @@ namespace GameCaro
         public PictureBox PlayerMark { get => playerMark; set => playerMark = value; }
         private List<List<Button>> matrix;
         public List<List<Button>> Matrix { get => matrix; set => matrix = value; }
+
+        private event EventHandler playerMarked;
+        public event EventHandler PlayerMarked 
+        {
+            add { playerMarked += value; }
+            remove { playerMarked -= value; }
+        }
+        private event EventHandler endedGame;
+        public event EventHandler EndedGame
+        {
+            add { endedGame += value; }
+            remove { endedGame -= value; }
+        }
         #endregion
 
         #region Initialize
@@ -55,13 +68,19 @@ namespace GameCaro
             Mark(btn);
 
             ChangePlayer();
+
+            if (playerMarked != null)
+                playerMarked(this, new EventArgs());
+
             if (isEndGame(btn))
             {
                 EndGame();
             }
+            
         }
-        private void EndGame() {
-            MessageBox.Show("Kết thúc game !");
+        public void EndGame() {
+            if(endedGame != null)
+                endedGame(this, new EventArgs());
         }
         private bool isEndGame(Button btn)
         {
@@ -179,6 +198,7 @@ namespace GameCaro
         #region Methods
         public void DrawChessBoard()
         {
+            chessBoard.Enabled = true;
             Matrix = new List<List<Button>>();
             Button Oldbutton = new Button() { Width = 0, Location = new Point(0, 0) };
 

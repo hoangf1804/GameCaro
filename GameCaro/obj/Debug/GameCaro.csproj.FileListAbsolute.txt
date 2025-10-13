@@ -18,3 +18,4 @@ D:\C#\hoangf1804\GameCaro\GameCaro\obj\Debug\GameCaro.csproj.GenerateResource.ca
 D:\C#\hoangf1804\GameCaro\GameCaro\obj\Debug\GameCaro.csproj.CoreCompileInputs.cache
 D:\C#\hoangf1804\GameCaro\GameCaro\obj\Debug\GameCaro.exe
 D:\C#\hoangf1804\GameCaro\GameCaro\obj\Debug\GameCaro.pdb
+D:\C#\hoangf1804\GameCaro\GameCaro\obj\Debug\GameCaro.exe.config

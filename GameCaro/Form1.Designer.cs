@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.pnlchessboard = new System.Windows.Forms.Panel();
             this.pnlAvatar = new System.Windows.Forms.Panel();
@@ -39,6 +40,7 @@
             this.pctbMark = new System.Windows.Forms.PictureBox();
             this.prcbCoolDown = new System.Windows.Forms.ProgressBar();
             this.txbPlayerName = new System.Windows.Forms.TextBox();
+            this.tmCoolDown = new System.Windows.Forms.Timer(this.components);
             this.pnlAvatar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pctAvatar)).BeginInit();
             this.panel3.SuspendLayout();
@@ -131,6 +133,7 @@
             this.prcbCoolDown.Name = "prcbCoolDown";
             this.prcbCoolDown.Size = new System.Drawing.Size(140, 24);
             this.prcbCoolDown.TabIndex = 1;
+            this.prcbCoolDown.Click += new System.EventHandler(this.prcbCoolDown_Click);
             // 
             // txbPlayerName
             // 
@@ -140,6 +143,10 @@
             this.txbPlayerName.Size = new System.Drawing.Size(140, 20);
             this.txbPlayerName.TabIndex = 0;
             this.txbPlayerName.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
+            // tmCoolDown
+            // 
+            this.tmCoolDown.Tick += new System.EventHandler(this.tmCoolDown_Tick);
             // 
             // Form1
             // 
@@ -174,6 +181,7 @@
         private System.Windows.Forms.TextBox txbIP;
         private System.Windows.Forms.PictureBox pctbMark;
         private System.Windows.Forms.PictureBox pctAvatar;
+        private System.Windows.Forms.Timer tmCoolDown;
     }
 }
 
