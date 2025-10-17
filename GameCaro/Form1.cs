@@ -21,16 +21,34 @@ namespace GameCaro
             prcbCoolDown.Value = 0;
             tmCoolDown.Interval = Cons.COOl_DOWN_INTERVAL;
 
-            chessBoard.DrawChessBoard();
-            
+            NewGame();
         }
 
         void EndGame()
         {
             tmCoolDown.Stop();
             pnlchessboard.Enabled = false;
+            undoToolStripMenuItem.Enabled = false;
             MessageBox.Show("Kết thúc");
         }  
+
+        void NewGame()
+        {
+            prcbCoolDown.Value = 0;
+            tmCoolDown.Stop();
+            undoToolStripMenuItem.Enabled = true;
+            chessBoard.DrawChessBoard();
+        }
+       
+        void Quit()
+        {
+            Application.Exit();
+        }
+
+        void Undo()
+        {
+            chessBoard.Undo();
+        }
 
         private void ChessBoard_PlayerMarked(object sender, EventArgs e)
         {
@@ -81,6 +99,40 @@ namespace GameCaro
             {
                 EndGame();
             }
+        }
+        
+
+        private void qQuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Quit();
+        }
+
+       
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (MessageBox.Show("Bạn có chắc chắn muốn thoát ", "Thông báo", MessageBoxButtons.OKCancel) != System.Windows.Forms.DialogResult.OK)
+            e.Cancel = true;
+        }
+
+        private void Form1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void menuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void newGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NewGame();
+        }
+
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Undo();
         }
     }
 }
