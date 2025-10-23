@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Drawing;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace GameCaro
@@ -8,11 +11,14 @@ namespace GameCaro
     {
         #region Properties
         ChessBoardManager chessBoard;
+        SocketManager socket;
         #endregion
         public Form1()
         {
             InitializeComponent();
-            chessBoard = new ChessBoardManager(pnlchessboard,txbPlayerName,pctbMark);
+            socket = new SocketManager();
+
+            chessBoard = new ChessBoardManager(pnlchessboard, txbPlayerName, pctbMark);
             chessBoard.EndedGame += ChessBoard_EndedGame;
             chessBoard.PlayerMarked += ChessBoard_PlayerMarked;
 
@@ -20,6 +26,8 @@ namespace GameCaro
             prcbCoolDown.Maximum = Cons.COOL_DOWN_TIME;
             prcbCoolDown.Value = 0;
             tmCoolDown.Interval = Cons.COOl_DOWN_INTERVAL;
+
+
 
             NewGame();
         }
@@ -30,7 +38,7 @@ namespace GameCaro
             pnlchessboard.Enabled = false;
             undoToolStripMenuItem.Enabled = false;
             MessageBox.Show("Kết thúc");
-        }  
+        }
 
         void NewGame()
         {
@@ -39,7 +47,7 @@ namespace GameCaro
             undoToolStripMenuItem.Enabled = true;
             chessBoard.DrawChessBoard();
         }
-       
+
         void Quit()
         {
             Application.Exit();
@@ -54,7 +62,7 @@ namespace GameCaro
         {
             tmCoolDown.Start();
             prcbCoolDown.Value = 0;
-            
+
         }
 
         private void ChessBoard_EndedGame(object sender, EventArgs e)
@@ -89,7 +97,7 @@ namespace GameCaro
 
         private void prcbCoolDown_Click(object sender, EventArgs e)
         {
- 
+
         }
 
         private void tmCoolDown_Tick(object sender, EventArgs e)
@@ -100,19 +108,19 @@ namespace GameCaro
                 EndGame();
             }
         }
-        
+
 
         private void qQuToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Quit();
         }
 
-       
+
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (MessageBox.Show("Bạn có chắc chắn muốn thoát ", "Thông báo", MessageBoxButtons.OKCancel) != System.Windows.Forms.DialogResult.OK)
-            e.Cancel = true;
+                e.Cancel = true;
         }
 
         private void Form1_Click(object sender, EventArgs e)
@@ -134,6 +142,65 @@ namespace GameCaro
         {
             Undo();
         }
+        private void btnLAN_Click(object sender, EventArgs e)
+        {
+            socket.IP = txbIP.Text;
+
+            if (!socket.ConnectServer())
+            {
+                socket.CreateServer();
+
+                Thread listenThread = new Thread(() =>
+                {
+                    while (true)
+                    {
+                        Thread.Sleep(500);
+                        try
+                        {
+                            Listen();
+                            break;
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                });
+                listenThread.IsBackground = true;
+                listenThread.Start();
+            }
+            else
+            {
+                Thread listenThread = new Thread(() =>
+                {
+                    Listen();
+                });
+                listenThread.IsBackground = true;
+                listenThread.Start();
+
+                socket.Send("Thông tin từ Client");
+            }
+
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            txbIP.Text = socket.GetLocalIPv4(NetworkInterfaceType.Wireless80211);
+
+            if (string.IsNullOrEmpty(txbIP.Text))
+            {
+                txbIP.Text = socket.GetLocalIPv4(NetworkInterfaceType.Ethernet);
+            }
+        }
+
+        void Listen()
+        {
+            string data = (string)socket.Receive();
+
+            DialogResult dialogResult = MessageBox.Show(data);
+        }
+
+
     }
 }
 

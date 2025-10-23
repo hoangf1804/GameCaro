@@ -19,3 +19,13 @@ D:\C#\hoangf1804\GameCaro\GameCaro\obj\Debug\GameCaro.csproj.CoreCompileInputs.c
 D:\C#\hoangf1804\GameCaro\GameCaro\obj\Debug\GameCaro.exe
 D:\C#\hoangf1804\GameCaro\GameCaro\obj\Debug\GameCaro.pdb
 D:\C#\hoangf1804\GameCaro\GameCaro\obj\Debug\GameCaro.exe.config
+C:\Users\longt\source\repos\GameCaro\GameCaro\bin\Debug\GameCaro.exe.config
+C:\Users\longt\source\repos\GameCaro\GameCaro\bin\Debug\GameCaro.exe
+C:\Users\longt\source\repos\GameCaro\GameCaro\bin\Debug\GameCaro.pdb
+C:\Users\longt\source\repos\GameCaro\GameCaro\obj\Debug\GameCaro.csproj.AssemblyReference.cache
+C:\Users\longt\source\repos\GameCaro\GameCaro\obj\Debug\GameCaro.Form1.resources
+C:\Users\longt\source\repos\GameCaro\GameCaro\obj\Debug\GameCaro.Properties.Resources.resources
+C:\Users\longt\source\repos\GameCaro\GameCaro\obj\Debug\GameCaro.csproj.GenerateResource.cache
+C:\Users\longt\source\repos\GameCaro\GameCaro\obj\Debug\GameCaro.csproj.CoreCompileInputs.cache
+C:\Users\longt\source\repos\GameCaro\GameCaro\obj\Debug\GameCaro.exe
+C:\Users\longt\source\repos\GameCaro\GameCaro\obj\Debug\GameCaro.pdb
