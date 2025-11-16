@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -21,13 +21,12 @@ namespace GameCaro
             chessBoard = new ChessBoardManager(pnlchessboard, txbPlayerName, pctbMark);
             chessBoard.EndedGame += ChessBoard_EndedGame;
             chessBoard.PlayerMarked += ChessBoard_PlayerMarked;
+            chessBoard.Socket = socket;
 
             prcbCoolDown.Step = Cons.COOL_DOWN_STEP;
             prcbCoolDown.Maximum = Cons.COOL_DOWN_TIME;
             prcbCoolDown.Value = 0;
             tmCoolDown.Interval = Cons.COOl_DOWN_INTERVAL;
-
-
 
             NewGame();
         }
@@ -46,6 +45,24 @@ namespace GameCaro
             tmCoolDown.Stop();
             undoToolStripMenuItem.Enabled = true;
             chessBoard.DrawChessBoard();
+            
+            if (socket != null && !chessBoard.IsPlayingWithComputer)
+            {
+                try
+                {
+                    SocketData data = new SocketData((int)SocketCommand.NEW_GAME, new Point(), "");
+                    socket.Send(data);
+                }
+                catch { }
+            }
+        }
+
+        void NewGameFromNetwork()
+        {
+            prcbCoolDown.Value = 0;
+            tmCoolDown.Stop();
+            undoToolStripMenuItem.Enabled = true;
+            chessBoard.DrawChessBoard();
         }
 
         void Quit()
@@ -58,11 +75,31 @@ namespace GameCaro
             chessBoard.Undo();
         }
 
+        void UndoFromNetwork()
+        {
+            if (chessBoard.PlayTimeLine.Count <= 0)
+                return;
+            
+            PlayInfo oldPoint = chessBoard.PlayTimeLine.Pop();
+            Button btn = chessBoard.Matrix[oldPoint.Point.Y][oldPoint.Point.X];
+            btn.BackgroundImage = null;
+            
+            if (chessBoard.PlayTimeLine.Count <= 0)
+            {
+                chessBoard.CurrentPlayer = 0;
+            }
+            else
+            {
+                oldPoint = chessBoard.PlayTimeLine.Peek();
+                chessBoard.CurrentPlayer = oldPoint.CurrentPalyer == 1 ? 0 : 1;
+            }
+        }
+
         private void ChessBoard_PlayerMarked(object sender, EventArgs e)
         {
             tmCoolDown.Start();
             prcbCoolDown.Value = 0;
-
+            pnlchessboard.Enabled = false;
         }
 
         private void ChessBoard_EndedGame(object sender, EventArgs e)
@@ -149,6 +186,8 @@ namespace GameCaro
             if (!socket.ConnectServer())
             {
                 socket.CreateServer();
+                chessBoard.IsPlayingWithComputer = false;
+                pnlchessboard.Enabled = true;
 
                 Thread listenThread = new Thread(() =>
                 {
@@ -157,8 +196,8 @@ namespace GameCaro
                         Thread.Sleep(500);
                         try
                         {
-                            Listen();
-                            break;
+                            SocketData data = (SocketData)socket.Receive();
+                            ProcessData(data);
                         }
                         catch
                         {
@@ -168,36 +207,111 @@ namespace GameCaro
                 });
                 listenThread.IsBackground = true;
                 listenThread.Start();
+
+                MessageBox.Show("Đang chờ người chơi kết nối...", "Server");
             }
             else
             {
+                chessBoard.IsPlayingWithComputer = false;
+                chessBoard.CurrentPlayer = 1;
+                pnlchessboard.Enabled = false;
+
                 Thread listenThread = new Thread(() =>
                 {
-                    Listen();
+                    while (true)
+                    {
+                        try
+                        {
+                            SocketData data = (SocketData)socket.Receive();
+                            ProcessData(data);
+                        }
+                        catch
+                        {
+
+                        }
+                    }
                 });
                 listenThread.IsBackground = true;
                 listenThread.Start();
 
-                socket.Send("Thông tin từ Client");
+                MessageBox.Show("Đã kết nối thành công!", "Client");
             }
-
         }
 
         private void Form1_Shown(object sender, EventArgs e)
         {
-            txbIP.Text = socket.GetLocalIPv4(NetworkInterfaceType.Wireless80211);
-
-            if (string.IsNullOrEmpty(txbIP.Text))
+            try
             {
-                txbIP.Text = socket.GetLocalIPv4(NetworkInterfaceType.Ethernet);
+                string ip = socket.GetLocalIPv4(NetworkInterfaceType.Wireless80211);
+
+                if (string.IsNullOrEmpty(ip))
+                {
+                    ip = socket.GetLocalIPv4(NetworkInterfaceType.Ethernet);
+                }
+
+                if (!string.IsNullOrEmpty(ip))
+                {
+                    txbIP.Text = ip;
+                }
+                else
+                {
+                    txbIP.Text = "127.0.0.1";
+                    MessageBox.Show("Không tìm thấy card mạng WiFi/Ethernet đang hoạt động.\n\nVui lòng nhập IP thủ công: 192.168.157.91", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                txbIP.Text = "127.0.0.1";
+                MessageBox.Show("Không thể lấy IP tự động. Vui lòng nhập IP thủ công.\n\nLỗi: " + ex.Message, "Thông báo");
             }
         }
 
-        void Listen()
+        void ProcessData(SocketData data)
         {
-            string data = (string)socket.Receive();
+            if (data == null)
+                return;
 
-            DialogResult dialogResult = MessageBox.Show(data);
+            switch (data.Command)
+            {
+                case (int)SocketCommand.SEND_POINT:
+                    this.Invoke((MethodInvoker)(() =>
+                    {
+                        prcbCoolDown.Value = 0;
+                        pnlchessboard.Enabled = true;
+                        chessBoard.OtherPlayerMark(data.Point, data.CurrentPlayer);
+                    }));
+                    break;
+                case (int)SocketCommand.NEW_GAME:
+                    this.Invoke((MethodInvoker)(() =>
+                    {
+                        NewGameFromNetwork();
+                    }));
+                    break;
+                case (int)SocketCommand.UNDO:
+                    this.Invoke((MethodInvoker)(() =>
+                    {
+                        UndoFromNetwork();
+                    }));
+                    break;
+                case (int)SocketCommand.END_GAME:
+                    this.Invoke((MethodInvoker)(() =>
+                    {
+                        MessageBox.Show(data.Message);
+                    }));
+                    break;
+                case (int)SocketCommand.TIME_OUT:
+                    this.Invoke((MethodInvoker)(() =>
+                    {
+                        MessageBox.Show("Hết giờ!");
+                    }));
+                    break;
+                case (int)SocketCommand.QUIT:
+                    this.Invoke((MethodInvoker)(() =>
+                    {
+                        MessageBox.Show("Đối thủ đã thoát!");
+                    }));
+                    break;
+            }
         }
 
 

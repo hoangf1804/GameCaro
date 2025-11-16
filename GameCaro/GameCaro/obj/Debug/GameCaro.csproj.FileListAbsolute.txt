@@ -29,3 +29,13 @@ C:\Users\longt\source\repos\GameCaro\GameCaro\obj\Debug\GameCaro.csproj.Generate
 C:\Users\longt\source\repos\GameCaro\GameCaro\obj\Debug\GameCaro.csproj.CoreCompileInputs.cache
 C:\Users\longt\source\repos\GameCaro\GameCaro\obj\Debug\GameCaro.exe
 C:\Users\longt\source\repos\GameCaro\GameCaro\obj\Debug\GameCaro.pdb
+D:\GameCaro-main\GameCaro\bin\Debug\GameCaro.exe.config
+D:\GameCaro-main\GameCaro\bin\Debug\GameCaro.exe
+D:\GameCaro-main\GameCaro\bin\Debug\GameCaro.pdb
+D:\GameCaro-main\GameCaro\obj\Debug\GameCaro.csproj.AssemblyReference.cache
+D:\GameCaro-main\GameCaro\obj\Debug\GameCaro.Form1.resources
+D:\GameCaro-main\GameCaro\obj\Debug\GameCaro.Properties.Resources.resources
+D:\GameCaro-main\GameCaro\obj\Debug\GameCaro.csproj.GenerateResource.cache
+D:\GameCaro-main\GameCaro\obj\Debug\GameCaro.csproj.CoreCompileInputs.cache
+D:\GameCaro-main\GameCaro\obj\Debug\GameCaro.exe
+D:\GameCaro-main\GameCaro\obj\Debug\GameCaro.pdb

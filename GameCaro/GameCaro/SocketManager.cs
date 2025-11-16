@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -56,33 +56,52 @@ namespace GameCaro
         #region Both
         public string IP = "127.0.0.1";
         public int PORT = 9999;
-        public const int BUFFER = 1024;
+        public const int BUFFER = 2048;
         public bool isServer = true;
 
         public bool Send(object data)
         {
-            byte[] sendData = SerializeData(data);
-
-            return SendData(client, sendData);
+            try
+            {
+                byte[] sendData = SerializeData(data);
+                return SendData(client, sendData);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public object Receive()
         {
-            byte[] receiveData = new byte[BUFFER];
-            bool isOk = ReceiveData(client, receiveData);
-
-            return DeserializeData(receiveData);
+            try
+            {
+                byte[] receiveData = new byte[BUFFER];
+                int bytesRead = client.Receive(receiveData);
+                
+                if (bytesRead > 0)
+                {
+                    return DeserializeData(receiveData);
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private bool SendData(Socket target, byte[] data)
         {
-            return target.Send(data) == 1 ? true : false;
-        }
-
-
-        private bool ReceiveData(Socket target, byte[] data)
-        {
-            return target.Receive(data) == 1 ? true : false;
+            try
+            {
+                int bytesSent = target.Send(data);
+                return bytesSent > 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
         /// <summary>
         /// Nén đối tượng thành mảng byte[]

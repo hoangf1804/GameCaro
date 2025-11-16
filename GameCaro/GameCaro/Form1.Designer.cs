@@ -1,4 +1,4 @@
-﻿namespace GameCaro
+namespace GameCaro
 {
     partial class Form1
     {
@@ -121,6 +121,7 @@
             this.btnLan.TabIndex = 4;
             this.btnLan.Text = "LAN";
             this.btnLan.UseVisualStyleBackColor = true;
+            this.btnLan.Click += new System.EventHandler(this.btnLAN_Click);
             // 
             // txbIP
             // 

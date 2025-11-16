@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -15,6 +15,12 @@ namespace GameCaro
         private readonly Panel chessBoard;
         private List<Player> player;
         public List<Player> Player { get => player; set => player = value; }
+
+        private SocketManager socket;
+        public SocketManager Socket { get => socket; set => socket = value; }
+
+        private bool isPlayingWithComputer;
+        public bool IsPlayingWithComputer { get => isPlayingWithComputer; set => isPlayingWithComputer = value; }
        
 
         private int currentPlayer;
@@ -57,11 +63,10 @@ namespace GameCaro
             this.PlayerMark = mark;
             this.Player = new List<Player>() 
             {
-                new Player("QuocKhanh",Image.FromFile(Application.StartupPath + "\\Resources\\x.png")),
-                new Player("DepTrai",Image.FromFile(Application.StartupPath + "\\Resources\\o.png"))
+                new Player("Player 1",Image.FromFile(Application.StartupPath + "\\Resources\\x.png")),
+                new Player("Player 2",Image.FromFile(Application.StartupPath + "\\Resources\\o.png"))
             };
-            
-            
+            this.IsPlayingWithComputer = false;
         }
         void btn_Click(object sender, EventArgs e)
         {
@@ -69,8 +74,16 @@ namespace GameCaro
 
             if (btn.BackgroundImage != null)
                 return;
+            
             Mark(btn);
             PlayTimeLine.Push(new PlayInfo(GetChessPoint(btn), (CurrentPlayer)));
+            
+            if (!IsPlayingWithComputer && Socket != null)
+            {
+                SocketData data = new SocketData((int)SocketCommand.SEND_POINT, GetChessPoint(btn), "", CurrentPlayer);
+                Socket.Send(data);
+            }
+
             CurrentPlayer = CurrentPlayer == 1 ? 0 : 1;
             ChangePlayer();
 
@@ -92,6 +105,13 @@ namespace GameCaro
         {
             if (PlayTimeLine.Count <= 0)
                 return false;
+            
+            if (!IsPlayingWithComputer && Socket != null)
+            {
+                SocketData data = new SocketData((int)SocketCommand.UNDO, new Point(), "");
+                Socket.Send(data);
+            }
+
             PlayInfo oldPoint = PlayTimeLine.Pop();
             Button btn = Matrix[oldPoint.Point.Y][oldPoint.Point.X];
             btn.BackgroundImage = null;
@@ -232,10 +252,10 @@ namespace GameCaro
             Matrix = new List<List<Button>>();
             Button Oldbutton = new Button() { Width = 0, Location = new Point(0, 0) };
 
-            for (int i = 0; i < Cons.CHESS_BOARD_HEIGHT; i++)  // số hàng
+            for (int i = 0; i < Cons.CHESS_BOARD_HEIGHT; i++)
             {
                 Matrix.Add(new List<Button>());
-                for (int j = 0; j < Cons.CHESS_BOARD_WIDTH; j++)  // số cột
+                for (int j = 0; j < Cons.CHESS_BOARD_WIDTH; j++)
                 {
                     Button btn = new Button();
                     btn.Width = Cons.CHESS_WIDTH;
@@ -251,7 +271,6 @@ namespace GameCaro
                     Oldbutton = btn;
                 }
 
-                // Sau khi xong 1 hàng, reset lại Oldbutton để nhảy xuống hàng mới
                 Oldbutton = new Button()
                 {
                     Width = 0,
@@ -272,6 +291,24 @@ namespace GameCaro
         {
             PlayerName.Text = Player[CurrentPlayer].Name;
             PlayerMark.Image = Player[CurrentPlayer].Mark;
+        }
+
+        public void OtherPlayerMark(Point point, int opponentPlayer)
+        {
+            Button btn = Matrix[point.Y][point.X];
+            if (btn.BackgroundImage != null)
+                return;
+
+            btn.BackgroundImage = Player[opponentPlayer].Mark;
+            PlayTimeLine.Push(new PlayInfo(point, opponentPlayer));
+            
+            CurrentPlayer = opponentPlayer == 1 ? 0 : 1;
+            ChangePlayer();
+
+            if (isEndGame(btn))
+            {
+                EndGame();
+            }
         }
         #endregion
     }
