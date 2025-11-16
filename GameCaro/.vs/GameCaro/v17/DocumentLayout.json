@@ -1,10 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\longt\\source\\repos\\GameCaro\\",
+  "WorkspaceRootPath": "D:\\py\\hoangf1804\\GameCaro\\GameCaro\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\longt\\source\\repos\\GameCaro\\GameCaro\\SocketManager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:GameCaro\\SocketManager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FE3BC34B-5F06-42DF-88F9-D5979936A130}|GameCaro.csproj|d:\\py\\hoangf1804\\gamecaro\\gamecaro\\socketmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FE3BC34B-5F06-42DF-88F9-D5979936A130}|GameCaro.csproj|solutionrelative:socketmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,24 +14,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "SocketManager.cs",
-              "DocumentMoniker": "C:\\Users\\longt\\source\\repos\\GameCaro\\GameCaro\\SocketManager.cs",
-              "RelativeDocumentMoniker": "GameCaro\\SocketManager.cs",
-              "ToolTip": "C:\\Users\\longt\\source\\repos\\GameCaro\\GameCaro\\SocketManager.cs",
-              "RelativeToolTip": "GameCaro\\SocketManager.cs",
-              "ViewState": "AgIAADoAAAAAAAAAAAAAADwAAAANAAAAAAAAAA==",
+              "DocumentMoniker": "D:\\py\\hoangf1804\\GameCaro\\GameCaro\\SocketManager.cs",
+              "RelativeDocumentMoniker": "SocketManager.cs",
+              "ToolTip": "D:\\py\\hoangf1804\\GameCaro\\GameCaro\\SocketManager.cs",
+              "RelativeToolTip": "SocketManager.cs",
+              "ViewState": "AgIAAE4AAAAAAAAAAAAcwGEAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-20T15:26:59.421Z",
+              "WhenOpened": "2025-11-16T15:08:30.412Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
             }
           ]
         }
