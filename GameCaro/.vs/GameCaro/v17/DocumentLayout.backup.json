@@ -1,7 +1,24 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\py\\hoangf1804\\GameCaro\\GameCaro\\",
-  "Documents": [],
+  "WorkspaceRootPath": "D:\\Hoctap\\GameCaro\\GameCaro\\GameCaro\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{FE3BC34B-5F06-42DF-88F9-D5979936A130}|GameCaro.csproj|d:\\hoctap\\gamecaro\\gamecaro\\gamecaro\\chessboardmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FE3BC34B-5F06-42DF-88F9-D5979936A130}|GameCaro.csproj|solutionrelative:chessboardmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FE3BC34B-5F06-42DF-88F9-D5979936A130}|GameCaro.csproj|d:\\hoctap\\gamecaro\\gamecaro\\gamecaro\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FE3BC34B-5F06-42DF-88F9-D5979936A130}|GameCaro.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FE3BC34B-5F06-42DF-88F9-D5979936A130}|GameCaro.csproj|D:\\Hoctap\\GameCaro\\GameCaro\\GameCaro\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FE3BC34B-5F06-42DF-88F9-D5979936A130}|GameCaro.csproj|solutionrelative:player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FE3BC34B-5F06-42DF-88F9-D5979936A130}|GameCaro.csproj|D:\\Hoctap\\GameCaro\\GameCaro\\GameCaro\\cons.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FE3BC34B-5F06-42DF-88F9-D5979936A130}|GameCaro.csproj|solutionrelative:cons.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +26,59 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ChessBoardManager.cs",
+              "DocumentMoniker": "D:\\Hoctap\\GameCaro\\GameCaro\\GameCaro\\ChessBoardManager.cs",
+              "RelativeDocumentMoniker": "ChessBoardManager.cs",
+              "ToolTip": "D:\\Hoctap\\GameCaro\\GameCaro\\GameCaro\\ChessBoardManager.cs",
+              "RelativeToolTip": "ChessBoardManager.cs",
+              "ViewState": "AgIAACcBAAAAAAAAAAAcwEkBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T09:49:45.319Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Form1.cs",
+              "DocumentMoniker": "D:\\Hoctap\\GameCaro\\GameCaro\\GameCaro\\Form1.cs",
+              "RelativeDocumentMoniker": "Form1.cs",
+              "ToolTip": "D:\\Hoctap\\GameCaro\\GameCaro\\GameCaro\\Form1.cs",
+              "RelativeToolTip": "Form1.cs",
+              "ViewState": "AgIAAH4BAAAAAAAAAAAAAKYBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T09:45:35.981Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Player.cs",
+              "DocumentMoniker": "D:\\Hoctap\\GameCaro\\GameCaro\\GameCaro\\Player.cs",
+              "RelativeDocumentMoniker": "Player.cs",
+              "ToolTip": "D:\\Hoctap\\GameCaro\\GameCaro\\GameCaro\\Player.cs",
+              "RelativeToolTip": "Player.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T09:45:06.982Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Cons.cs",
+              "DocumentMoniker": "D:\\Hoctap\\GameCaro\\GameCaro\\GameCaro\\Cons.cs",
+              "RelativeDocumentMoniker": "Cons.cs",
+              "ToolTip": "D:\\Hoctap\\GameCaro\\GameCaro\\GameCaro\\Cons.cs",
+              "RelativeToolTip": "Cons.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T09:45:04.632Z",
+              "EditorCaption": ""
             }
           ]
         }

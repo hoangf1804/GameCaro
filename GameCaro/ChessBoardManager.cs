@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,15 +22,15 @@ namespace GameCaro
 
         private bool isPlayingWithComputer;
         public bool IsPlayingWithComputer { get => isPlayingWithComputer; set => isPlayingWithComputer = value; }
-       
+
 
         private int currentPlayer;
         public int CurrentPlayer { get => currentPlayer; set => currentPlayer = value; }
-       
+
 
         private TextBox playerName;
         public TextBox PlayerName { get => playerName; set => playerName = value; }
-        
+
 
         private PictureBox playerMark;
         public PictureBox PlayerMark { get => playerMark; set => playerMark = value; }
@@ -37,7 +38,7 @@ namespace GameCaro
         public List<List<Button>> Matrix { get => matrix; set => matrix = value; }
 
         private event EventHandler playerMarked;
-        public event EventHandler PlayerMarked 
+        public event EventHandler PlayerMarked
         {
             add { playerMarked += value; }
             remove { playerMarked -= value; }
@@ -49,19 +50,20 @@ namespace GameCaro
             remove { endedGame -= value; }
         }
         private Stack<PlayInfo> playTimeLine;
-        public Stack<PlayInfo> PlayTimeLine{
+        public Stack<PlayInfo> PlayTimeLine
+        {
             get { return playTimeLine; }
             set { playTimeLine = value; }
         }
         #endregion
 
         #region Initialize
-        public ChessBoardManager(Panel chessBoard, TextBox playerName, PictureBox mark) 
+        public ChessBoardManager(Panel chessBoard, TextBox playerName, PictureBox mark)
         {
             this.chessBoard = chessBoard;
             this.PlayerName = playerName;
             this.PlayerMark = mark;
-            this.Player = new List<Player>() 
+            this.Player = new List<Player>()
             {
                 new Player("Player 1",Image.FromFile(Application.StartupPath + "\\Resources\\x.png")),
                 new Player("Player 2",Image.FromFile(Application.StartupPath + "\\Resources\\o.png"))
@@ -74,10 +76,10 @@ namespace GameCaro
 
             if (btn.BackgroundImage != null)
                 return;
-            
+
             Mark(btn);
             PlayTimeLine.Push(new PlayInfo(GetChessPoint(btn), (CurrentPlayer)));
-            
+
             if (!IsPlayingWithComputer && Socket != null)
             {
                 SocketData data = new SocketData((int)SocketCommand.SEND_POINT, GetChessPoint(btn), "", CurrentPlayer);
@@ -94,10 +96,11 @@ namespace GameCaro
             {
                 EndGame();
             }
-            
+
         }
-        public void EndGame() {
-            if(endedGame != null)
+        public void EndGame()
+        {
+            if (endedGame != null)
                 endedGame(this, new EventArgs());
         }
 
@@ -105,26 +108,36 @@ namespace GameCaro
         {
             if (PlayTimeLine.Count <= 0)
                 return false;
-            
-            if (!IsPlayingWithComputer && Socket != null)
+
+            bool isUndo1 = UndoAstep();
+            bool isUndo2 = UndoAstep();
+
+            if (PlayTimeLine.Count > 0)
             {
-                SocketData data = new SocketData((int)SocketCommand.UNDO, new Point(), "");
-                Socket.Send(data);
+                PlayInfo oldPoint = PlayTimeLine.Peek();
+                CurrentPlayer = oldPoint.CurrentPalyer;
             }
+            else
+
+            {
+                CurrentPlayer = 0;
+            }
+
+            ChangePlayer();
+            return isUndo1 && isUndo2;
+        }
+
+        private bool UndoAstep()
+        {
+            if (PlayTimeLine.Count <= 0)
+                return false;
+
+
 
             PlayInfo oldPoint = PlayTimeLine.Pop();
             Button btn = Matrix[oldPoint.Point.Y][oldPoint.Point.X];
             btn.BackgroundImage = null;
-            if (PlayTimeLine.Count <= 0)
-            {
-                CurrentPlayer = 0;
-            }
-            else
-            {
-                oldPoint = PlayTimeLine.Peek();
-                CurrentPlayer = oldPoint.CurrentPalyer == 1 ? 0 : 1;
-            }         
-            ChangePlayer();
+
             return true;
         }
 
@@ -134,7 +147,7 @@ namespace GameCaro
         }
         private Point GetChessPoint(Button btn)
         {
-              
+
             int vertical = Convert.ToInt32(btn.Tag);
             int horizontal = Matrix[vertical].IndexOf(btn);
             Point point = new Point(horizontal, vertical);
@@ -144,7 +157,7 @@ namespace GameCaro
         {
             Point point = GetChessPoint(btn);
             int countLeft = 0;
-            for (int i = point.X ; i >0; i--) 
+            for (int i = point.X; i > 0; i--)
             {
                 if (Matrix[point.Y][i].BackgroundImage == btn.BackgroundImage)
                     countLeft++;
@@ -187,20 +200,20 @@ namespace GameCaro
             Point point = GetChessPoint(btn);
             int countTop = 0;
 
-            for (int i =0; i <= point.X; i++)
+            for (int i = 0; i <= point.X; i++)
             {
                 if (point.X - i < 0 || point.Y - i < 0)
                     break;
 
-                if (Matrix[point.Y-i][point.X-i].BackgroundImage == btn.BackgroundImage)
+                if (Matrix[point.Y - i][point.X - i].BackgroundImage == btn.BackgroundImage)
                     countTop++;
                 else
                     break;
             }
             int countBottom = 0;
-            for (int i = 1; i <= Cons.CHESS_BOARD_WIDTH-point.X; i++)
+            for (int i = 1; i <= Cons.CHESS_BOARD_WIDTH - point.X; i++)
             {
-                if(point.Y + i >= Cons.CHESS_BOARD_HEIGHT||point.X + i >= Cons.CHESS_BOARD_WIDTH)
+                if (point.Y + i >= Cons.CHESS_BOARD_HEIGHT || point.X + i >= Cons.CHESS_BOARD_WIDTH)
                     break;
                 if (Matrix[point.Y + i][point.X + i].BackgroundImage == btn.BackgroundImage)
                     countBottom++;
@@ -227,15 +240,15 @@ namespace GameCaro
             int countBottom = 0;
             for (int i = 1; i <= Cons.CHESS_BOARD_WIDTH - point.X; i++)
             {
-                if ( point.Y + i >= Cons.CHESS_BOARD_WIDTH ||point.X - i < 0)
-                    break; 
+                if (point.Y + i >= Cons.CHESS_BOARD_WIDTH || point.X - i < 0)
+                    break;
                 if (Matrix[point.Y + i][point.X - i].BackgroundImage == btn.BackgroundImage)
                     countBottom++;
                 else
                     break;
             }
             return countTop + countBottom == 5;
-        }   
+        }
 
 
 
@@ -261,9 +274,9 @@ namespace GameCaro
                     btn.Width = Cons.CHESS_WIDTH;
                     btn.Height = Cons.CHESS_HEIGHT;
                     btn.Location = new Point(Oldbutton.Location.X + Oldbutton.Width, Oldbutton.Location.Y);
-                    btn.BackgroundImageLayout = ImageLayout.Stretch; 
+                    btn.BackgroundImageLayout = ImageLayout.Stretch;
                     btn.Tag = i.ToString();
-                    
+
                     btn.Click += btn_Click;
 
                     chessBoard.Controls.Add(btn);
@@ -277,15 +290,15 @@ namespace GameCaro
                     Height = 0,
                     Location = new Point(0, Oldbutton.Location.Y + Cons.CHESS_HEIGHT),
                     BackgroundImageLayout = ImageLayout.Stretch
-                    
+
                 };
             }
         }
-       
+
         private void Mark(Button btn)
         {
             btn.BackgroundImage = Player[CurrentPlayer].Mark;
-            
+
         }
         private void ChangePlayer()
         {
@@ -301,7 +314,7 @@ namespace GameCaro
 
             btn.BackgroundImage = Player[opponentPlayer].Mark;
             PlayTimeLine.Push(new PlayInfo(point, opponentPlayer));
-            
+
             CurrentPlayer = opponentPlayer == 1 ? 0 : 1;
             ChangePlayer();
 
@@ -312,5 +325,5 @@ namespace GameCaro
         }
         #endregion
     }
-   
+
 }

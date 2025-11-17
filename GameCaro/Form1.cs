@@ -36,22 +36,49 @@ namespace GameCaro
             tmCoolDown.Stop();
             pnlchessboard.Enabled = false;
             undoToolStripMenuItem.Enabled = false;
-            MessageBox.Show("Kết thúc");
         }
 
         void NewGame()
         {
-            prcbCoolDown.Value = 0;
-            tmCoolDown.Stop();
-            undoToolStripMenuItem.Enabled = true;
-            chessBoard.DrawChessBoard();
-            
+            if (this.InvokeRequired)
+            {
+                this.Invoke((MethodInvoker)(() =>
+                {
+                    prcbCoolDown.Value = 0;
+                    tmCoolDown.Stop();
+                    undoToolStripMenuItem.Enabled = true;
+                    chessBoard.DrawChessBoard();
+                }));
+            }
+            else
+            {
+                prcbCoolDown.Value = 0;
+                tmCoolDown.Stop();
+                undoToolStripMenuItem.Enabled = true;
+                chessBoard.DrawChessBoard();
+            }
+
             if (socket != null && !chessBoard.IsPlayingWithComputer)
             {
                 try
                 {
                     SocketData data = new SocketData((int)SocketCommand.NEW_GAME, new Point(), "");
                     socket.Send(data);
+
+
+                    if (this.InvokeRequired)
+                    {
+                        this.Invoke((MethodInvoker)(() =>
+                        {
+                            pnlchessboard.Enabled = true;
+                            chessBoard.CurrentPlayer = 0;
+                        }));
+                    }
+                    else
+                    {
+                        pnlchessboard.Enabled = true;
+                        chessBoard.CurrentPlayer = 0;
+                    }
                 }
                 catch { }
             }
@@ -59,10 +86,17 @@ namespace GameCaro
 
         void NewGameFromNetwork()
         {
-            prcbCoolDown.Value = 0;
-            tmCoolDown.Stop();
-            undoToolStripMenuItem.Enabled = true;
-            chessBoard.DrawChessBoard();
+            this.Invoke((MethodInvoker)(() =>
+            {
+                prcbCoolDown.Value = 0;
+                tmCoolDown.Stop();
+                undoToolStripMenuItem.Enabled = true;
+                chessBoard.DrawChessBoard();
+
+
+                pnlchessboard.Enabled = false;
+                chessBoard.CurrentPlayer = 1;
+            }));
         }
 
         void Quit()
@@ -73,17 +107,18 @@ namespace GameCaro
         void Undo()
         {
             chessBoard.Undo();
+            prcbCoolDown.Value = 0;
         }
 
         void UndoFromNetwork()
         {
             if (chessBoard.PlayTimeLine.Count <= 0)
                 return;
-            
+
             PlayInfo oldPoint = chessBoard.PlayTimeLine.Pop();
             Button btn = chessBoard.Matrix[oldPoint.Point.Y][oldPoint.Point.X];
             btn.BackgroundImage = null;
-            
+
             if (chessBoard.PlayTimeLine.Count <= 0)
             {
                 chessBoard.CurrentPlayer = 0;
@@ -100,11 +135,27 @@ namespace GameCaro
             tmCoolDown.Start();
             prcbCoolDown.Value = 0;
             pnlchessboard.Enabled = false;
+
+            undoToolStripMenuItem.Enabled = false;
+
         }
 
         private void ChessBoard_EndedGame(object sender, EventArgs e)
         {
             EndGame();
+
+
+            if (socket != null && !chessBoard.IsPlayingWithComputer)
+            {
+                try
+                {
+                    SocketData data = new SocketData((int)SocketCommand.END_GAME, new Point(), "Đối thủ đã thắng! Có 5 quân liên tiếp.");
+                    socket.Send(data);
+                }
+                catch { }
+            }
+
+            MessageBox.Show("Kết thúc! Bạn đã thắng!");
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -143,6 +194,19 @@ namespace GameCaro
             if (prcbCoolDown.Value >= prcbCoolDown.Maximum)
             {
                 EndGame();
+
+
+                if (socket != null && !chessBoard.IsPlayingWithComputer)
+                {
+                    try
+                    {
+                        SocketData data = new SocketData((int)SocketCommand.TIME_OUT, new Point(), "Đối thủ đã hết giờ!");
+                        socket.Send(data);
+                    }
+                    catch { }
+                }
+
+                MessageBox.Show("Hết giờ! Bạn đã thua.");
             }
         }
 
@@ -156,8 +220,24 @@ namespace GameCaro
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (MessageBox.Show("Bạn có chắc chắn muốn thoát ", "Thông báo", MessageBoxButtons.OKCancel) != System.Windows.Forms.DialogResult.OK)
+            if (MessageBox.Show("Bạn có chắc chắn muốn thoát?", "Thông báo", MessageBoxButtons.OKCancel) != System.Windows.Forms.DialogResult.OK)
+            {
                 e.Cancel = true;
+            }
+            else
+            {
+
+                if (socket != null && !chessBoard.IsPlayingWithComputer)
+                {
+                    try
+                    {
+                        SocketData data = new SocketData((int)SocketCommand.QUIT, new Point(), "Đối thủ đã thoát khỏi game!");
+                        socket.Send(data);
+                        Thread.Sleep(100);
+                    }
+                    catch { }
+                }
+            }
         }
 
         private void Form1_Click(object sender, EventArgs e)
@@ -177,6 +257,16 @@ namespace GameCaro
 
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!chessBoard.IsPlayingWithComputer && socket != null)
+            {
+                try
+                {
+                    SocketData data = new SocketData((int)SocketCommand.UNDO, new Point(), "");
+                    socket.Send(data);
+                }
+                catch { }
+
+            }
             Undo();
         }
         private void btnLAN_Click(object sender, EventArgs e)
@@ -279,6 +369,7 @@ namespace GameCaro
                         prcbCoolDown.Value = 0;
                         pnlchessboard.Enabled = true;
                         chessBoard.OtherPlayerMark(data.Point, data.CurrentPlayer);
+                        undoToolStripMenuItem.Enabled = true;
                     }));
                     break;
                 case (int)SocketCommand.NEW_GAME:
@@ -290,25 +381,36 @@ namespace GameCaro
                 case (int)SocketCommand.UNDO:
                     this.Invoke((MethodInvoker)(() =>
                     {
-                        UndoFromNetwork();
+                        Undo();
+                        prcbCoolDown.Value = 0;
+
                     }));
                     break;
                 case (int)SocketCommand.END_GAME:
                     this.Invoke((MethodInvoker)(() =>
                     {
-                        MessageBox.Show(data.Message);
+                        tmCoolDown.Stop();
+                        pnlchessboard.Enabled = false;
+                        undoToolStripMenuItem.Enabled = false;
+                        MessageBox.Show(data.Message, "Kết thúc");
                     }));
                     break;
                 case (int)SocketCommand.TIME_OUT:
                     this.Invoke((MethodInvoker)(() =>
                     {
-                        MessageBox.Show("Hết giờ!");
+                        tmCoolDown.Stop();
+                        pnlchessboard.Enabled = false;
+                        undoToolStripMenuItem.Enabled = false;
+                        MessageBox.Show(data.Message, "Hết giờ");
                     }));
                     break;
                 case (int)SocketCommand.QUIT:
                     this.Invoke((MethodInvoker)(() =>
                     {
-                        MessageBox.Show("Đối thủ đã thoát!");
+                        tmCoolDown.Stop();
+                        pnlchessboard.Enabled = false;
+                        undoToolStripMenuItem.Enabled = false;
+                        MessageBox.Show(data.Message, "Đối thủ thoát");
                     }));
                     break;
             }
